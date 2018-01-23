@@ -1,5 +1,6 @@
 package org.itzheng.and.ble.utils;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -67,6 +68,35 @@ public class BleOptionUtils {
             mBluetoothLeService = null;
         }
     };
+
+    /**
+     * 获取当前的蓝牙设备
+     *
+     * @return
+     */
+    public BluetoothDevice getCurrentDevice() {
+        return mBluetoothLeService == null ? null : mBluetoothLeService.getCurrentDevice();
+    }
+
+    /**
+     * 获取当前的蓝牙地址
+     *
+     * @return
+     */
+    public String getCurrentAddress() {
+        BluetoothDevice device = getCurrentDevice();
+        return device == null ? "" : device.getAddress();
+    }
+
+    /**
+     * 获取当前的蓝牙名称
+     *
+     * @return
+     */
+    public String getCurrentName() {
+        BluetoothDevice device = getCurrentDevice();
+        return device == null ? "" : device.getName();
+    }
 
     /**
      * 将接收数据的监听添加到服务
@@ -222,5 +252,9 @@ public class BleOptionUtils {
             }
         }).start();
         return 1;
+    }
+
+    public boolean isConnect() {
+        return mBluetoothLeService != null && mBluetoothLeService.isConnect();
     }
 }

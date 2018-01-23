@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.itzheng.and.baseutils.ui.UIUtils;
 import org.itzheng.and.ble.callback.OnConnectionStateChangeListener;
 import org.itzheng.and.ble.callback.OnReceiveDataListener;
 import org.itzheng.and.ble.utils.BleOptionUtils;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         bleOptionUtils = BleOptionUtils.newInstance(getApplicationContext());
         bleScanUtils.setScanCallback(mScanCallback);
+        UIUtils.init(this);
         setContentView(R.layout.activity_main);
         listView = findViewById(R.id.lv);
         initViewClick();
@@ -51,11 +53,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onConnection() {
                 Log.i(TAG, "onConnection: ");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        UIUtils.showToast("连接成功");
+                    }
+                });
+
             }
 
             @Override
             public void onDisconnection() {
                 Log.i(TAG, "onDisconnection: ");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        UIUtils.showToast("断开连接");
+                    }
+                });
+
             }
 
             @Override
@@ -87,12 +103,26 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnStart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                UIUtils.showToast("start");
+                            }
+                        });
+
+                    }
+                }).start();
+
                 startScan();
             }
         });
         findViewById(R.id.btnStop).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UIUtils.showToast("stop");
                 bleScanUtils.stopLeScan();
             }
         });
@@ -113,6 +143,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 bleOptionUtils.disconnect();
+            }
+        });
+        findViewById(R.id.btnConnectStatus).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean connect = bleOptionUtils.isConnect();
+                if (connect) {
+                    UIUtils.showToast(bleOptionUtils.getCurrentAddress());
+                } else {
+                    UIUtils.showToast("蓝牙未连接");
+                }
             }
         });
     }

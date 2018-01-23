@@ -14,6 +14,7 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
@@ -28,16 +29,29 @@ import org.itzheng.and.ble.uuid.DefUuid;
 import org.itzheng.and.ble.uuid.IUUIDS;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
  * 蓝牙服务器，一个蓝牙服务同一时间，只能连接一个蓝牙
+ * 如果需要支持多蓝牙需要进行缓存判断：
+ * 1，需要对BluetoothGattCallback进行多个判断
+ * 2，建立连接时，不要断开当前连接，新建一个连接
+ * 3，连接成功后，需要将连接对象进行缓存，断开连接需要移除
+ * 还有很多细节需要考虑，目前暂无多蓝牙连接需求，先不考虑
  */
 public class BluetoothLeService extends Service {
     private static final String TAG = "BluetoothLeService";
     private BluetoothGatt mBluetoothGatt;
+    /**
+     * 蓝牙连接状态
+     * String 蓝牙地址
+     * Integer 连接状态 {@link android.bluetooth.BluetoothProfile}
+     */
+    private Map<String, Integer> mBleConnectionStatus = new HashMap<>();
 
     @Nullable
     @Override
@@ -46,6 +60,7 @@ public class BluetoothLeService extends Service {
     }
 
     Handler mHandler = new Handler(Looper.getMainLooper());
+    //多蓝牙通信的话，只要重写这个监听，就可以分别接受消息了
     MyBluetoothGattCallback mGattCallback = new MyBluetoothGattCallback();
     /**
      * 收到消息的监听
@@ -55,6 +70,10 @@ public class BluetoothLeService extends Service {
      * 状态改变的监听
      */
     private List<OnConnectionStateChangeListener> mOnConnectionStateChangeListeners = new ArrayList<>();
+    /**
+     * 最新连接的蓝牙地址
+     */
+    private String mBleAddress = "";
 
     /**
      * 连接蓝牙到指定地址
@@ -64,6 +83,7 @@ public class BluetoothLeService extends Service {
      */
     @SuppressLint("NewApi")
     public boolean connect(String address) {
+        mBleAddress = address;
         Log.d(TAG, "connect:" + address);
         BluetoothAdapter bluetoothAdapter = BluetoothUtils.getBluetoothAdapter();
         if (bluetoothAdapter == null) {
@@ -100,6 +120,16 @@ public class BluetoothLeService extends Service {
             }
         }
         return true;
+    }
+
+    /**
+     * 获取当前的连接设备
+     *
+     * @return
+     */
+    @SuppressLint("NewApi")
+    public BluetoothDevice getCurrentDevice() {
+        return mBluetoothGatt == null ? null : mBluetoothGatt.getDevice();
     }
 
     /**
@@ -186,6 +216,32 @@ public class BluetoothLeService extends Service {
             writeBytes = ByteUtils.getBytesByString(g);
         }
         return post(writeBytes);
+    }
+
+    /**
+     * 蓝牙是否连接，当前的地址
+     *
+     * @return
+     */
+    public boolean isConnect() {
+        return isConnect(mBleAddress);
+    }
+
+    /**
+     * 判断是否连接指定蓝牙
+     *
+     * @param address
+     * @return
+     */
+    public boolean isConnect(String address) {
+        if (address == null || mBleConnectionStatus.isEmpty()) {
+            return false;
+        }
+        Integer integer = mBleConnectionStatus.get(address);
+        if (integer == null) {
+            return false;
+        }
+        return integer == BluetoothProfile.STATE_CONNECTED;
     }
 
     public class LocalBinder extends Binder {
@@ -288,6 +344,8 @@ public class BluetoothLeService extends Service {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             super.onConnectionStateChange(gatt, status, newState);
+            //添加连接状态
+            mBleConnectionStatus.put(gatt.getDevice().getAddress(), newState);
             Log.i(TAG, "onConnectionStateChange status:" + status + ",newState:" + newState);
             switch (newState) {
                 case BluetoothAdapter.STATE_CONNECTED:
@@ -305,7 +363,10 @@ public class BluetoothLeService extends Service {
                     break;
                 case BluetoothAdapter.STATE_DISCONNECTED:
                     //蓝牙断开
-
+                    if (mBluetoothGatt != null) {
+                        mBluetoothGatt.close();
+                        mBluetoothGatt = null;
+                    }
                     break;
             }
             updateConnectionStateListener(newState);
