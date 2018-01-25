@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         });
         bleOptionUtils.addOnConnectionStateChangeListener(new OnConnectionStateChangeListener() {
             @Override
-            public void onConnection() {
-                Log.i(TAG, "onConnection: ");
+            public void onConnected() {
+                Log.i(TAG, "onConnected: ");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onDisconnection() {
-                Log.i(TAG, "onDisconnection: ");
+            public void onDisconnected() {
+                Log.i(TAG, "onDisconnected: ");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -156,6 +156,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        findViewById(R.id.btnNewActivity).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UIUtils.startActivity(MainActivity.class);
+            }
+        });
     }
 
     private void startSync() {
@@ -202,5 +208,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         bleScanUtils.stopLeScan();
+        bleOptionUtils.recycle();
+        bleOptionUtils = null;
     }
 }

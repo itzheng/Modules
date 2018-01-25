@@ -90,23 +90,26 @@ public class BluetoothLeService extends Service {
             //蓝牙不可用
             return false;
         }
-        if (mBluetoothGatt != null) {
-            BluetoothDevice bluetoothDevice = mBluetoothGatt.getDevice();
-            if (bluetoothDevice != null) {
-                if (address.equalsIgnoreCase(bluetoothDevice.getAddress())) {
-                    if (mBluetoothGatt.connect()) {
-                        //如果当前连接的蓝牙和目标一致，就不用重新连接,
-                        //如果进行再次连接会造成重复连接，则数据接收重复
-                        return true;
-                    }
-                } else {
-                    //如果之前连接的是其他设备，将其他设备断开连接,
-                    // 如果未断开，会同时连接多个蓝牙
-                    //目前没有对多个连接进行处理
-                    mBluetoothGatt.disconnect();
-                }
-            }
+        if (false && mBluetoothGatt != null) {
+//            BluetoothDevice bluetoothDevice = mBluetoothGatt.getDevice();
+//            if (bluetoothDevice != null) {
+//                if (address.equalsIgnoreCase(bluetoothDevice.getAddress())) {
+//                    if (mBluetoothGatt.connect()) {
+//                        //如果当前连接的蓝牙和目标一致，就不用重新连接,
+//                        //如果进行再次连接会造成重复连接，则数据接收重复
+//                        Log.i(TAG, "mBluetoothGatt.connect()");
+//                        return true;
+//                    }
+//                }
+//            }
+            //如果之前连接的是其他设备，将其他设备断开连接,
+            // 如果未断开，会同时连接多个蓝牙
+            //目前没有对多个连接进行处理
+//            mBluetoothGatt.disconnect();
+            disconnect();
         }
+        //每次进行连接前，先断开连接
+        disconnect();
         if (true) {
             //新建一个连接
             BluetoothDevice device = bluetoothAdapter.getRemoteDevice(address);
@@ -137,7 +140,7 @@ public class BluetoothLeService extends Service {
      */
     @SuppressLint("NewApi")
     public void disconnect() {
-        if (mBluetoothGatt != null) {
+        if (mBluetoothGatt != null && mBluetoothGatt.connect()) {
             mBluetoothGatt.disconnect();
         }
     }
@@ -365,7 +368,8 @@ public class BluetoothLeService extends Service {
                     //蓝牙断开
                     if (mBluetoothGatt != null) {
                         mBluetoothGatt.close();
-                        mBluetoothGatt = null;
+//                        disconnect();
+//                        mBluetoothGatt = null;
                     }
                     break;
             }
@@ -411,7 +415,23 @@ public class BluetoothLeService extends Service {
     /**
      * 发现服务完成的监听
      */
-    private final static int STATE_SERVICES_DISCOVERED = 0xd1;
+    public final static int STATE_SERVICES_DISCOVERED = 0xd1;
+    /**
+     * The profile is in disconnected state
+     */
+    public static final int STATE_DISCONNECTED = BluetoothProfile.STATE_DISCONNECTED;
+    /**
+     * The profile is in connecting state
+     */
+    public static final int STATE_CONNECTING = BluetoothProfile.STATE_CONNECTING;
+    /**
+     * The profile is in connected state
+     */
+    public static final int STATE_CONNECTED = BluetoothProfile.STATE_CONNECTED;
+    /**
+     * The profile is in disconnecting state
+     */
+    public static final int STATE_DISCONNECTING = BluetoothProfile.STATE_DISCONNECTING;
 
     /**
      * 更新连接状态
@@ -428,12 +448,12 @@ public class BluetoothLeService extends Service {
             }
             switch (newState) {
                 //已连接
-                case BluetoothAdapter.STATE_CONNECTED:
-                    listener.onConnection();
+                case STATE_CONNECTED:
+                    listener.onConnected();
                     break;
-                case BluetoothAdapter.STATE_DISCONNECTED:
+                case STATE_DISCONNECTED:
                     //蓝牙断开
-                    listener.onDisconnection();
+                    listener.onDisconnected();
                     break;
                 case STATE_SERVICES_DISCOVERED:
                     listener.onServicesDiscovered();
@@ -531,12 +551,12 @@ public class BluetoothLeService extends Service {
         /**
          * 连接时的监听
          */
-        void onConnection();
+        void onConnected();
 
         /**
          * 断开连接的监听
          */
-        void onDisconnection();
+        void onDisconnected();
 
         /**
          * 服务扫描完成后的监听

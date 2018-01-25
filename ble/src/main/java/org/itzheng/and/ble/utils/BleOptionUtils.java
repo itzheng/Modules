@@ -1,6 +1,7 @@
 package org.itzheng.and.ble.utils;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothProfile;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,8 @@ import java.util.List;
 /**
  * Title:蓝牙操作工具类<br>
  * Description: <br>
+ * 关于监听回调，应该只保存在本工具类中，每个工具类单独监听服务的监听
+ * 有监听回调时，再遍历回调对应的回调列表
  *
  * @email ItZheng@ZoHo.com
  * Created by itzheng on 2018-1-19.
@@ -33,6 +36,8 @@ public class BleOptionUtils {
      * 服务未连接时，监听临时保存到这里，等服务器创建时，将监听像服务赋值，然后清空
      */
     private List<OnConnectionStateChangeListener> tempOnConnectionStateChangeListener = new ArrayList<>();
+    private MyOnReceiveDataListener myOnReceiveDataListener = new MyOnReceiveDataListener();
+    private MyOnConnectionStateChangeListener myOnConnectionStateChangeListener = new MyOnConnectionStateChangeListener();
 
     /**
      * 实例化一个对象
@@ -102,28 +107,30 @@ public class BleOptionUtils {
      * 将接收数据的监听添加到服务
      */
     private void addOnReceiveDataListenerToServer() {
-        if (tempOnReceiveDataListener != null && tempOnReceiveDataListener.size() > 0) {
-            for (int i = 0; i < tempOnReceiveDataListener.size(); i++) {
-                OnReceiveDataListener onReceiveDataListener = tempOnReceiveDataListener.get(i);
-                mBluetoothLeService.addOnReceiveDataListener(onReceiveDataListener);
-                tempOnReceiveDataListener.remove(onReceiveDataListener);
-                i--;
-            }
-        }
+        mBluetoothLeService.addOnReceiveDataListener(myOnReceiveDataListener);
+//        if (tempOnReceiveDataListener != null && tempOnReceiveDataListener.size() > 0) {
+//            for (int i = 0; i < tempOnReceiveDataListener.size(); i++) {
+//                OnReceiveDataListener onReceiveDataListener = tempOnReceiveDataListener.get(i);
+//                mBluetoothLeService.addOnReceiveDataListener(onReceiveDataListener);
+//                tempOnReceiveDataListener.remove(onReceiveDataListener);
+//                i--;
+//            }
+//        }
     }
 
     /**
      * 将接收数据的监听添加到服务
      */
     private void addOnConnectionStateChangeListenerToServer() {
-        if (tempOnConnectionStateChangeListener != null && tempOnConnectionStateChangeListener.size() > 0) {
-            for (int i = 0; i < tempOnConnectionStateChangeListener.size(); i++) {
-                OnConnectionStateChangeListener listener = tempOnConnectionStateChangeListener.get(i);
-                mBluetoothLeService.addOnConnectionStateChangeListener(listener);
-                tempOnConnectionStateChangeListener.remove(listener);
-                i--;
-            }
-        }
+        mBluetoothLeService.addOnConnectionStateChangeListener(myOnConnectionStateChangeListener);
+//        if (tempOnConnectionStateChangeListener != null && tempOnConnectionStateChangeListener.size() > 0) {
+//            for (int i = 0; i < tempOnConnectionStateChangeListener.size(); i++) {
+//                OnConnectionStateChangeListener listener = tempOnConnectionStateChangeListener.get(i);
+//                mBluetoothLeService.addOnConnectionStateChangeListener(listener);
+//                tempOnConnectionStateChangeListener.remove(listener);
+//                i--;
+//            }
+//        }
     }
 
     private Context mContext;
@@ -140,12 +147,23 @@ public class BleOptionUtils {
         mContext.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
+    /**
+     * 清空所有引用
+     */
     public void recycle() {
+        tempOnReceiveDataListener.clear();
+        tempOnConnectionStateChangeListener.clear();
+    }
+
+    /**
+     * 停止蓝牙服务
+     */
+
+    public void stopService() {
         if (mBluetoothLeService != null) {
             Intent intent = new Intent(mContext, BluetoothLeService.class);
             mBluetoothLeService.stopService(intent);
         }
-
     }
 
     /**
@@ -177,11 +195,12 @@ public class BleOptionUtils {
         if (listener == null) {
             return;
         }
-        if (mBluetoothLeService == null) {
-            tempOnReceiveDataListener.add(listener);
-        } else {
-            mBluetoothLeService.addOnReceiveDataListener(listener);
-        }
+        tempOnReceiveDataListener.add(listener);
+//        if (mBluetoothLeService == null) {
+//            tempOnReceiveDataListener.add(listener);
+//        } else {
+//            mBluetoothLeService.addOnReceiveDataListener(listener);
+//        }
 
     }
 
@@ -194,11 +213,12 @@ public class BleOptionUtils {
         if (listener == null) {
             return;
         }
-        if (mBluetoothLeService == null) {
-            tempOnReceiveDataListener.remove(listener);
-        } else {
-            mBluetoothLeService.removeOnReceiveDataListener(listener);
-        }
+        tempOnReceiveDataListener.remove(listener);
+//        if (mBluetoothLeService == null) {
+//            tempOnReceiveDataListener.remove(listener);
+//        } else {
+//            mBluetoothLeService.removeOnReceiveDataListener(listener);
+//        }
 
     }
 
@@ -211,11 +231,12 @@ public class BleOptionUtils {
         if (listener == null) {
             return;
         }
-        if (mBluetoothLeService == null) {
-            tempOnConnectionStateChangeListener.add(listener);
-        } else {
-            mBluetoothLeService.addOnConnectionStateChangeListener(listener);
-        }
+        tempOnConnectionStateChangeListener.add(listener);
+//        if (mBluetoothLeService == null) {
+//            tempOnConnectionStateChangeListener.add(listener);
+//        } else {
+//            mBluetoothLeService.addOnConnectionStateChangeListener(listener);
+//        }
 
     }
 
@@ -228,11 +249,12 @@ public class BleOptionUtils {
         if (listener == null) {
             return;
         }
-        if (mBluetoothLeService == null) {
-            tempOnConnectionStateChangeListener.remove(listener);
-        } else {
-            mBluetoothLeService.removeOnConnectionStateChangeListener(listener);
-        }
+        tempOnConnectionStateChangeListener.remove(listener);
+//        if (mBluetoothLeService == null) {
+//            tempOnConnectionStateChangeListener.remove(listener);
+//        } else {
+//            mBluetoothLeService.removeOnConnectionStateChangeListener(listener);
+//        }
 
     }
 
@@ -256,5 +278,70 @@ public class BleOptionUtils {
 
     public boolean isConnect() {
         return mBluetoothLeService != null && mBluetoothLeService.isConnect();
+    }
+
+    /**
+     * 接收服务的消息回调
+     */
+    private class MyOnReceiveDataListener implements OnReceiveDataListener {
+
+        @Override
+        public void onReceiveData(byte[] value) {
+            updateReceiveData(value);
+        }
+    }
+
+    /**
+     * 更新接收消息的监听
+     *
+     * @param value
+     */
+    private void updateReceiveData(byte[] value) {
+        for (OnReceiveDataListener listener : tempOnReceiveDataListener) {
+            listener.onReceiveData(value);
+        }
+    }
+
+    /**
+     * 连接状态监听
+     */
+    private class MyOnConnectionStateChangeListener implements OnConnectionStateChangeListener {
+
+        @Override
+        public void onConnected() {
+            updateConnectionState(BluetoothLeService.STATE_CONNECTED);
+        }
+
+        @Override
+        public void onDisconnected() {
+            updateConnectionState(BluetoothLeService.STATE_DISCONNECTED);
+        }
+
+        @Override
+        public void onServicesDiscovered() {
+            updateConnectionState(BluetoothLeService.STATE_SERVICES_DISCOVERED);
+        }
+    }
+
+    /**
+     * 更新连接状态
+     *
+     * @param state
+     */
+    private void updateConnectionState(int state) {
+        for (OnConnectionStateChangeListener listener : tempOnConnectionStateChangeListener) {
+            switch (state) {
+                case BluetoothLeService.STATE_CONNECTED:
+                    listener.onConnected();
+                    break;
+                case BluetoothLeService.STATE_DISCONNECTED:
+                    listener.onDisconnected();
+                    break;
+                case BluetoothLeService.STATE_SERVICES_DISCOVERED:
+                    listener.onServicesDiscovered();
+                    break;
+            }
+        }
+
     }
 }
