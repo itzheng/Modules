@@ -108,14 +108,6 @@ public class BleOptionUtils {
      */
     private void addOnReceiveDataListenerToServer() {
         mBluetoothLeService.addOnReceiveDataListener(myOnReceiveDataListener);
-//        if (tempOnReceiveDataListener != null && tempOnReceiveDataListener.size() > 0) {
-//            for (int i = 0; i < tempOnReceiveDataListener.size(); i++) {
-//                OnReceiveDataListener onReceiveDataListener = tempOnReceiveDataListener.get(i);
-//                mBluetoothLeService.addOnReceiveDataListener(onReceiveDataListener);
-//                tempOnReceiveDataListener.remove(onReceiveDataListener);
-//                i--;
-//            }
-//        }
     }
 
     /**
@@ -123,14 +115,6 @@ public class BleOptionUtils {
      */
     private void addOnConnectionStateChangeListenerToServer() {
         mBluetoothLeService.addOnConnectionStateChangeListener(myOnConnectionStateChangeListener);
-//        if (tempOnConnectionStateChangeListener != null && tempOnConnectionStateChangeListener.size() > 0) {
-//            for (int i = 0; i < tempOnConnectionStateChangeListener.size(); i++) {
-//                OnConnectionStateChangeListener listener = tempOnConnectionStateChangeListener.get(i);
-//                mBluetoothLeService.addOnConnectionStateChangeListener(listener);
-//                tempOnConnectionStateChangeListener.remove(listener);
-//                i--;
-//            }
-//        }
     }
 
     private Context mContext;
@@ -153,6 +137,11 @@ public class BleOptionUtils {
     public void recycle() {
         tempOnReceiveDataListener.clear();
         tempOnConnectionStateChangeListener.clear();
+        if (mBluetoothLeService != null) {
+            //移除服务器的引用
+            mBluetoothLeService.removeOnConnectionStateChangeListener(myOnConnectionStateChangeListener);
+            mBluetoothLeService.removeOnReceiveDataListener(myOnReceiveDataListener);
+        }
     }
 
     /**
@@ -196,12 +185,6 @@ public class BleOptionUtils {
             return;
         }
         tempOnReceiveDataListener.add(listener);
-//        if (mBluetoothLeService == null) {
-//            tempOnReceiveDataListener.add(listener);
-//        } else {
-//            mBluetoothLeService.addOnReceiveDataListener(listener);
-//        }
-
     }
 
     /**
@@ -214,12 +197,6 @@ public class BleOptionUtils {
             return;
         }
         tempOnReceiveDataListener.remove(listener);
-//        if (mBluetoothLeService == null) {
-//            tempOnReceiveDataListener.remove(listener);
-//        } else {
-//            mBluetoothLeService.removeOnReceiveDataListener(listener);
-//        }
-
     }
 
     /**
@@ -232,12 +209,6 @@ public class BleOptionUtils {
             return;
         }
         tempOnConnectionStateChangeListener.add(listener);
-//        if (mBluetoothLeService == null) {
-//            tempOnConnectionStateChangeListener.add(listener);
-//        } else {
-//            mBluetoothLeService.addOnConnectionStateChangeListener(listener);
-//        }
-
     }
 
     /**
@@ -250,26 +221,37 @@ public class BleOptionUtils {
             return;
         }
         tempOnConnectionStateChangeListener.remove(listener);
-//        if (mBluetoothLeService == null) {
-//            tempOnConnectionStateChangeListener.remove(listener);
-//        } else {
-//            mBluetoothLeService.removeOnConnectionStateChangeListener(listener);
-//        }
-
     }
 
     public int post(byte[] data) {
         return mBluetoothLeService.post(data);
     }
 
+    /**
+     * 延时发送，默认50毫秒
+     *
+     * @param data
+     * @return
+     */
     public int postDelayedCmd(byte[] data) {
+        return postDelayedCmd(data, 50);
+    }
+
+    /**
+     * 延时发送，将整串的byte一个一个单独发送，
+     *
+     * @param data    要发送的byte
+     * @param sleepMs 间隔时间
+     * @return
+     */
+    public int postDelayedCmd(byte[] data, final long sleepMs) {
         final byte[] finalBytes = data;
         new Thread(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < finalBytes.length; i++) {
                     post(new byte[]{finalBytes[i]});
-                    SystemClock.sleep(50);
+                    SystemClock.sleep(sleepMs);
                 }
             }
         }).start();

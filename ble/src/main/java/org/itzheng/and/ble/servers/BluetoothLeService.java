@@ -45,6 +45,27 @@ import java.util.UUID;
  */
 public class BluetoothLeService extends Service {
     private static final String TAG = "BluetoothLeService";
+    /**
+     * 发现服务完成的监听
+     */
+    public final static int STATE_SERVICES_DISCOVERED = 0xd1;
+    /**
+     * The profile is in disconnected state
+     */
+    public static final int STATE_DISCONNECTED = BluetoothProfile.STATE_DISCONNECTED;
+    /**
+     * The profile is in connecting state
+     */
+    public static final int STATE_CONNECTING = BluetoothProfile.STATE_CONNECTING;
+    /**
+     * The profile is in connected state
+     */
+    public static final int STATE_CONNECTED = BluetoothProfile.STATE_CONNECTED;
+    /**
+     * The profile is in disconnecting state
+     */
+    public static final int STATE_DISCONNECTING = BluetoothProfile.STATE_DISCONNECTING;
+
     private BluetoothGatt mBluetoothGatt;
     /**
      * 蓝牙连接状态
@@ -412,26 +433,6 @@ public class BluetoothLeService extends Service {
         }
     }
 
-    /**
-     * 发现服务完成的监听
-     */
-    public final static int STATE_SERVICES_DISCOVERED = 0xd1;
-    /**
-     * The profile is in disconnected state
-     */
-    public static final int STATE_DISCONNECTED = BluetoothProfile.STATE_DISCONNECTED;
-    /**
-     * The profile is in connecting state
-     */
-    public static final int STATE_CONNECTING = BluetoothProfile.STATE_CONNECTING;
-    /**
-     * The profile is in connected state
-     */
-    public static final int STATE_CONNECTED = BluetoothProfile.STATE_CONNECTED;
-    /**
-     * The profile is in disconnecting state
-     */
-    public static final int STATE_DISCONNECTING = BluetoothProfile.STATE_DISCONNECTING;
 
     /**
      * 更新连接状态
