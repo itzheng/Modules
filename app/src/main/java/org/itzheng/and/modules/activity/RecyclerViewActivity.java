@@ -40,7 +40,7 @@ public class RecyclerViewActivity extends BaseActivity {
 
     private void setAdapter() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rcvContent.setLayoutManager(layoutManager);
         adapter = new MainAdapter();
         adapter.setItems(getDatas());
@@ -54,7 +54,7 @@ public class RecyclerViewActivity extends BaseActivity {
                         ,
                         UIUtils.dip2px(5), Color.RED
                         //左上右下
-//                        , UIUtils.dip2px(100), UIUtils.dip2px(0), UIUtils.dip2px(50), UIUtils.dip2px(0)
+                        , UIUtils.dip2px(10), UIUtils.dip2px(120), UIUtils.dip2px(30), UIUtils.dip2px(10)
                 );
         LinearLayoutDivider divider = (LinearLayoutDivider) decoration;
         divider.setDivider(UIUtils.getDrawable(R.drawable.shape_gradient));

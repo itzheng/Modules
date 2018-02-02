@@ -11,5 +11,7 @@
         android:id="@+id/rcvContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_blue_dark" />
+        android:background="@android:color/holo_blue_dark"
+        android:clipToPadding="false"
+        android:paddingTop="150dp" />
 </LinearLayout>

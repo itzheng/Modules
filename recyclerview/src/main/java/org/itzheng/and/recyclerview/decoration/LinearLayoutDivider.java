@@ -32,14 +32,16 @@ public class LinearLayoutDivider extends RecyclerView.ItemDecoration {
 
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+        Log.d(TAG, "onDraw:");
         int left;
         int right;
         int top;
         int bottom;
+        final int childCount = parent.getChildCount();
         if (getOrientation(parent) == LinearLayoutManager.HORIZONTAL) {
-            top = parent.getPaddingTop() + mMarginLeft;
-            bottom = parent.getHeight() - parent.getPaddingBottom() - mMarginRight;
-            final int childCount = parent.getChildCount();
+            top = parent.getPaddingTop() + mMarginTop;
+            bottom = parent.getHeight() - parent.getPaddingBottom() - mMarginBottom;
+
             for (int i = 0; i < childCount - 1; i++) {
                 final View child = parent.getChildAt(i);
                 final RecyclerView.LayoutParams params =
@@ -52,7 +54,9 @@ public class LinearLayoutDivider extends RecyclerView.ItemDecoration {
         } else {
             left = parent.getPaddingLeft() + mMarginLeft;
             right = parent.getWidth() - parent.getPaddingRight() - mMarginRight;
-            final int childCount = parent.getChildCount();
+            //当这个返回true时，如果有padding，分割线会显示在padding上面，需要进行细节处理
+            boolean clipToPadding = parent.getClipToPadding();
+            int paddingTop = parent.getPaddingTop();
             for (int i = 0; i < childCount; i++) {
                 final View child = parent.getChildAt(i);
                 final RecyclerView.LayoutParams params =
@@ -64,6 +68,8 @@ public class LinearLayoutDivider extends RecyclerView.ItemDecoration {
                         //应该可以兼容多机型
                         top = child.getBottom() - child.getHeight() - mSize - mMarginBottom;//-底部间距，就是距离底部，顶部不用管
                         bottom = top + mSize;
+//                        Log.d(TAG, " parent.getPaddingTop():" + parent.getPaddingTop() + " top:" + top);
+                        top = getNewTop(top, paddingTop, clipToPadding);
                         mDivider.setBounds(left, top, right, bottom);
                         mDivider.draw(c);
                     }
@@ -73,6 +79,7 @@ public class LinearLayoutDivider extends RecyclerView.ItemDecoration {
                     if ((mShowDivider & DecorationManager.ShowDivider.SHOW_DIVIDER_END) != 0) {
                         top = child.getBottom() + params.bottomMargin + mMarginTop;//+距离顶部
                         bottom = top + mSize;
+                        top = getNewTop(top, paddingTop, clipToPadding);
                         mDivider.setBounds(left, top, right, bottom);
                         mDivider.draw(c);
                     }
@@ -81,11 +88,27 @@ public class LinearLayoutDivider extends RecyclerView.ItemDecoration {
                     if ((mShowDivider & DecorationManager.ShowDivider.SHOW_DIVIDER_MIDDLE) != 0) {
                         top = child.getBottom() + params.bottomMargin + mMarginTop;//+距离顶部
                         bottom = top + mSize;
+                        top = getNewTop(top, paddingTop, clipToPadding);
                         mDivider.setBounds(left, top, right, bottom);
                         mDivider.draw(c);
                     }
             }
         }
+    }
+
+    /**
+     * 重新计算top绘制范围，如果clipToPadding，因为Chaild在padding里面，不可见，所以，分割线也应该隐藏
+     *
+     * @param top
+     * @param paddingTop
+     * @param clipToPadding
+     * @return
+     */
+    private int getNewTop(int top, int paddingTop, boolean clipToPadding) {
+        if (!clipToPadding) {
+            return top;
+        }
+        return top < paddingTop ? paddingTop : top;
     }
 
     private int getOrientation(RecyclerView recyclerView) {
@@ -101,15 +124,6 @@ public class LinearLayoutDivider extends RecyclerView.ItemDecoration {
         return defOrientation;
     }
 
-    //    @Override
-//    public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
-//                               RecyclerView.State state) {
-//        if (getOrientation(parent) == LinearLayoutManager.HORIZONTAL) {
-//            outRect.set(0, 0, mSize, 0);
-//        } else {
-//            outRect.set(0, 0, 0, mSize);
-//        }
-//    }
     private static final String TAG = "LinearLayoutDivider";
 
     /**
@@ -129,7 +143,22 @@ public class LinearLayoutDivider extends RecyclerView.ItemDecoration {
         RecyclerView.Adapter adapter = parent.getAdapter();
         final int childCount = adapter.getItemCount();
         if (getOrientation(parent) == LinearLayoutManager.HORIZONTAL) {
-            outRect.set(0, 0, mSize, 0);
+            int left = 0, top = 0, right = mSize, bottom = 0;
+            if (itemPosition == 0) {
+                if ((mShowDivider & DecorationManager.ShowDivider.SHOW_DIVIDER_BEGINNING) != 0) {
+                    //如果顶部有横线，需要设置间距
+                    left = mSize;
+                }
+                if ((mShowDivider & DecorationManager.ShowDivider.SHOW_DIVIDER_MIDDLE) == 0) {
+                    //如果顶部有横线，需要设置间距
+                    right = 0;
+                } else {
+                    right = mSize;
+                }
+            } else if (itemPosition == childCount - 1) {
+
+            }
+            outRect.set(left, top, right, bottom);
         } else {
             Log.d(TAG, "itemPosition:" + itemPosition);
             Log.d(TAG, "childCount:" + childCount);
@@ -171,6 +200,17 @@ public class LinearLayoutDivider extends RecyclerView.ItemDecoration {
 
                 bottom = bottom + mMarginTop + mMarginBottom;
             }
+//            //当这个返回true时，如果有padding，分割线会显示在padding上面，需要进行细节处理
+//            boolean clipToPadding = parent.getClipToPadding();
+//            if (clipToPadding) {
+//                View view = parent.getChildAt(itemPosition);
+//                int paddingTop = parent.getPaddingTop();
+//                float y = view.getY();
+//                Log.d(TAG, "paddingTop:" + paddingTop + " " + "y:" + y);
+//                outRect.set(left, top, right, bottom);
+//            } else {
+//                outRect.set(left, top, right, bottom);
+//            }
             outRect.set(left, top, right, bottom);
         }
         //默认都是0
