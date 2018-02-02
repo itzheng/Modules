@@ -258,6 +258,11 @@ public class BleOptionUtils {
         return 1;
     }
 
+    /**
+     * 当前是否处于连接状态
+     *
+     * @return
+     */
     public boolean isConnect() {
         return mBluetoothLeService != null && mBluetoothLeService.isConnect();
     }
@@ -324,6 +329,5 @@ public class BleOptionUtils {
                     break;
             }
         }
-
     }
 }
