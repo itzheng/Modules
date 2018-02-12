@@ -284,8 +284,9 @@ public class BleOptionUtils {
      * @param value
      */
     private void updateReceiveData(byte[] value) {
-        for (OnReceiveDataListener listener : tempOnReceiveDataListener) {
-            listener.onReceiveData(value);
+        for (int i = 0; i < tempOnReceiveDataListener.size(); i++) {
+            OnReceiveDataListener onReceiveDataListener = tempOnReceiveDataListener.get(i);
+            onReceiveDataListener.onReceiveData(value);
         }
     }
 
@@ -316,7 +317,8 @@ public class BleOptionUtils {
      * @param state
      */
     private void updateConnectionState(int state) {
-        for (OnConnectionStateChangeListener listener : tempOnConnectionStateChangeListener) {
+        for (int i = 0; i < tempOnConnectionStateChangeListener.size(); i++) {
+            OnConnectionStateChangeListener listener = tempOnConnectionStateChangeListener.get(i);
             switch (state) {
                 case BluetoothLeService.STATE_CONNECTED:
                     listener.onConnected();

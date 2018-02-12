@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
+import android.graphics.Bitmap;
 import android.os.Build;
 
 import org.itzheng.and.ble.bean.BluetoothDeviceInfo;
@@ -156,5 +157,16 @@ public class BleScanUtils {
                 //18以下的
             }
         }
+    }
+
+    /**
+     * 进行内存回收
+     */
+    public void recycle() {
+        mScanCallback = null;
+//        scanCallback_v21 = null;
+//        scanCallback_v18 = null;
+        deviceInfoList.clear();
+
     }
 }

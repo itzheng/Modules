@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 //全局变量，版本名
-def mVersionCode = 2
-def mVersionName = "0.0.2"
+def mVersionCode = 3
+def mVersionName = "0.0.3"
 
 android {
     compileSdkVersion 26
@@ -47,6 +47,7 @@ dependencies {
 /** 以下开始是将Android Library上传到jcenter的相关配置**/
 //https://www.cnblogs.com/zyw-205520/p/6502176.html
 //http://blog.csdn.net/linglongxin24/article/details/53415932
+//gradlew install     --->Publishing ————>bintrayUpload
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 

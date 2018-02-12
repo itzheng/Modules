@@ -19,6 +19,8 @@
         </activity>
         <activity android:name=".activity.BleActivity" />
         <activity android:name=".activity.RecyclerViewActivity" />
+        <activity android:name=".test.FirstActivity" />
+        <activity android:name=".test.SecondActivity" />
     </application>
 
 </manifest>

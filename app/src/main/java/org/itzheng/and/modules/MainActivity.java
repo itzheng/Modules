@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import org.itzheng.and.baseutils.ui.UIUtils;
 import org.itzheng.and.modules.activity.BleActivity;
 import org.itzheng.and.modules.activity.RecyclerViewActivity;
 import org.itzheng.and.modules.adapter.MainAdapter;
 import org.itzheng.and.modules.base.BaseActivity;
 import org.itzheng.and.modules.bean.ActItem;
+import org.itzheng.and.modules.test.FirstActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         rcvContent = findViewById(R.id.rcvContent);
         initData();
+        UIUtils.startActivity(FirstActivity.class);
     }
 
     private void initData() {
