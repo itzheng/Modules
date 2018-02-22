@@ -1,1 +1,1 @@
-include ':app', ':ble', ':http', ':baseutils',':recyclerview', ':activity'
+include ':app', ':ble', ':http', ':baseutils',':recyclerview', ':activity', ':fragment'

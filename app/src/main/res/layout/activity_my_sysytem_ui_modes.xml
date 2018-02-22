@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/frantic" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="25dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:background="#60ffdd00"
+        android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/cbFullScreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="FullScreen" />
+
+        <CheckBox
+            android:id="@+id/cbHideActionBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="HideActionBar" />
+
+        <CheckBox
+            android:id="@+id/cbTranslucentStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TranslucentStatus" />
+
+        <CheckBox
+            android:id="@+id/cbTranslucentNav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TranslucentNav" />
+
+        <CheckBox
+            android:id="@+id/cbHintNav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="HintNav" />
+    </LinearLayout>
+</FrameLayout>

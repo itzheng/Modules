@@ -21,6 +21,9 @@
         <activity android:name=".activity.RecyclerViewActivity" />
         <activity android:name=".test.FirstActivity" />
         <activity android:name=".test.SecondActivity" />
+        <activity android:name=".activity.FrameMainActivity" />
+        <activity android:name=".activity.SystemUIModes" />
+        <activity android:name=".activity.MySystemUIModesActivity" />
     </application>
 
 </manifest>
