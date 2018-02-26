@@ -16,42 +16,35 @@
 
 package org.itzheng.and.modules.activity;
 
-import android.app.ActionBar;
-import android.app.ActionBar.Tab;
 import android.app.Activity;
-import android.app.FragmentTransaction;
-import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.SearchView.OnQueryTextListener;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.Toolbar;
 
+import org.itzheng.and.activity.window.IWindowStatus;
+import org.itzheng.and.activity.window.helper.WindowStatusHelper;
 import org.itzheng.and.modules.R;
-import org.itzheng.and.modules.base.BaseActivity;
 
 /**
  * This activity demonstrates some of the available ways to reduce the size or visual contrast of
  * the system decor, in order to better focus the user's attention or use available screen real
  * estate on the task at hand.
  */
-public class MySystemUIModesActivity extends BaseActivity {
+public class MySystemUIModesActivity extends AppCompatActivity implements IWindowStatus {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_sysytem_ui_modes);
+//        Window.FEATURE_SUPPORT_ACTION_BAR
+        getWindow().addFlags(android.support.v7.app.AppCompatDelegate.FEATURE_SUPPORT_ACTION_BAR);
+        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolBar);
+        setSupportActionBar(toolbar);
         initView();
     }
 
@@ -60,7 +53,7 @@ public class MySystemUIModesActivity extends BaseActivity {
         cbFullScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setFullscreen(isChecked);
+                setFullScreen(isChecked);
             }
         });
         CheckBox cbHideActionBar = findViewById(R.id.cbHideActionBar);
@@ -88,7 +81,7 @@ public class MySystemUIModesActivity extends BaseActivity {
         cbHintNav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setHintNavigation(isChecked);
+                setHideNavigation(isChecked);
             }
         });
         setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
@@ -97,5 +90,98 @@ public class MySystemUIModesActivity extends BaseActivity {
                 cbHintNav.setChecked(isHintNavigation());
             }
         });
+        CheckBox cbStatusBarHasShadow = findViewById(R.id.cbStatusBarHasShadow);
+        cbStatusBarHasShadow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setStatusBarDarkMode(isChecked);
+            }
+        });
+
+        CheckBox cbNavigationBarColor = findViewById(R.id.cbNavigationBarColor);
+        cbNavigationBarColor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    setNavigationBarColor(Color.RED);
+                } else {
+                    setNavigationBarColor(Color.BLACK);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void setFullScreen(boolean on) {
+        getWindowStatusHelper().setFullScreen(on);
+    }
+
+    @Override
+    public void setHideActionBar(boolean on) {
+        getWindowStatusHelper().setHideActionBar(on);
+    }
+
+    @Override
+    public void setTranslucentStatus(boolean on) {
+        getWindowStatusHelper().setTranslucentStatus(on);
+    }
+
+    @Override
+    public void setTranslucentNavigation(boolean on) {
+        getWindowStatusHelper().setTranslucentNavigation(on);
+    }
+
+    @Override
+    public void setHideNavigation(boolean on, boolean isSticky) {
+        getWindowStatusHelper().setHideNavigation(on, isSticky);
+    }
+
+    @Override
+    public void setHideNavigation(boolean on) {
+        getWindowStatusHelper().setHideNavigation(on);
+    }
+
+    @Override
+    public boolean isHintNavigation() {
+        return getWindowStatusHelper().isHintNavigation();
+    }
+
+    @Override
+    public void setNavigationBarColor(int color) {
+        getWindowStatusHelper().setNavigationBarColor(color);
+    }
+
+
+    public void setOnSystemUiVisibilityChangeListener(View.OnSystemUiVisibilityChangeListener l) {
+//        getWindowStatusHelper().setOnSystemUiVisibilityChangeListener(l);
+        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(l);
+    }
+
+    IWindowStatus getWindowStatusHelper() {
+        return WindowStatusHelper.newInstance(this);
+    }
+
+    @Override
+    public void setStatusBarDarkMode(boolean on) {
+        getWindowStatusHelper().setStatusBarDarkMode(on);
+//        super.setStatusBarDarkMode(on);
+//        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+//            if (on) {
+//                setStatusBarColor(0x0fff0000);
+//            } else {
+//                setStatusBarColor(Color.TRANSPARENT);
+//            }
+//
+//        }
+    }
+
+    @Override
+    public void setStatusBarColor(int color) {
+        getWindowStatusHelper().setStatusBarColor(color);
+    }
+
+    @Override
+    public void setKeepScreenOn(boolean on) {
+        getWindowStatusHelper().setKeepScreenOn(on);
     }
 }

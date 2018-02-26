@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ViewStub
+        android:id="@+id/vsMainContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/layout_frame_main" />
+
+    <FrameLayout
+        android:id="@+id/flFragmentContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
 
     <ImageView
         android:layout_width="match_parent"
@@ -9,9 +10,36 @@
         android:scaleType="fitXY"
         android:src="@drawable/frantic" />
 
+    <!--    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@color/colorAccent"
+                android:visibility="gone" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@drawable/frantic" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@color/colorAccent" />
+        </LinearLayout>-->
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:layout_marginBottom="25dp"
         android:layout_marginLeft="25dp"
@@ -48,5 +76,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="HintNav" />
+
+        <CheckBox
+            android:id="@+id/cbStatusBarHasShadow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="StatusBarHasShadow" />
+
+        <CheckBox
+            android:id="@+id/cbNavigationBarColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NavigationBarColor" />
     </LinearLayout>
-</FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#00ff00" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

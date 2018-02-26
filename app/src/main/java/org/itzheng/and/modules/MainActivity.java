@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 
 import org.itzheng.and.baseutils.ui.UIUtils;
 import org.itzheng.and.modules.activity.BleActivity;
+import org.itzheng.and.modules.activity.DemoSystemUIModes;
 import org.itzheng.and.modules.activity.FrameMainActivity;
 import org.itzheng.and.modules.activity.MySystemUIModesActivity;
 import org.itzheng.and.modules.activity.RecyclerViewActivity;
@@ -57,8 +58,12 @@ public class MainActivity extends BaseActivity {
         item.name = "MySystemUIModesActivity";
         item.activity = MySystemUIModesActivity.class;
         actItems.add(item);
+        //DemoSystemUIModes
+        item = new ActItem();
+        item.name = "DemoSystemUIModes";
+        item.activity = DemoSystemUIModes.class;
+        actItems.add(item);
         //
-
         setAdapter(actItems);
     }
 

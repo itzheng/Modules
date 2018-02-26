@@ -24,6 +24,7 @@
         <activity android:name=".activity.FrameMainActivity" />
         <activity android:name=".activity.SystemUIModes" />
         <activity android:name=".activity.MySystemUIModesActivity" />
+        <activity android:name=".activity.DemoSystemUIModes" />
     </application>
 
 </manifest>
