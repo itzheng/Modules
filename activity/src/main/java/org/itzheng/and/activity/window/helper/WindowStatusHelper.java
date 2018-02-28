@@ -22,7 +22,7 @@ public class WindowStatusHelper {
             return WindowStatus_v23.newInstance(activity);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return WindowStatus_v21.newInstance(activity);
-        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             return WindowStatus_v19.newInstance(activity);
         }
         return WindowStatus_v00.newInstance(activity);
