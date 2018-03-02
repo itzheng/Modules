@@ -109,6 +109,17 @@ public class MySystemUIModesActivity extends AppCompatActivity implements IWindo
                 }
             }
         });
+        CheckBox cbStatusBarColor = findViewById(R.id.cbStatusBarColor);
+        cbStatusBarColor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    setStatusBarColor(Color.RED);
+                } else {
+                    setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+                }
+            }
+        });
     }
 
     @Override
@@ -157,8 +168,13 @@ public class MySystemUIModesActivity extends AppCompatActivity implements IWindo
         getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(l);
     }
 
+    IWindowStatus mIWindowStatus;
+
     IWindowStatus getWindowStatusHelper() {
-        return WindowStatusHelper.newInstance(this);
+        if (mIWindowStatus == null) {
+            mIWindowStatus = WindowStatusHelper.newInstance(this);
+        }
+        return mIWindowStatus;
     }
 
     @Override

@@ -88,6 +88,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="NavigationBarColor" />
+
+        <CheckBox
+            android:id="@+id/cbStatusBarColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="StatusBarColor" />
     </LinearLayout>
 
     <LinearLayout
