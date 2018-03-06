@@ -37,6 +37,11 @@ public class WindowStatus_v00 implements IWindowStatus {
     }
 
     @Override
+    public void setTranslucentStatus(boolean on, boolean isFullTranslucent) {
+
+    }
+
+    @Override
     public void setTranslucentNavigation(boolean on) {
 
     }

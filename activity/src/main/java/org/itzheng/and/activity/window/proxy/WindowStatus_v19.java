@@ -79,6 +79,12 @@ public class WindowStatus_v19 implements IWindowStatus {
 
     @Override
     public void setTranslucentStatus(boolean on) {
+        //默认全透明
+        setTranslucentStatus(on, true);
+    }
+
+    @Override
+    public void setTranslucentStatus(boolean on, boolean isFullTranslucent) {
         isTranslucentStatus = on;
         mWindowStatus.setTranslucentStatus(on);
         if (on) {

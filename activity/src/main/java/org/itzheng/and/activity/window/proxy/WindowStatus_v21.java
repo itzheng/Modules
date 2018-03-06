@@ -2,7 +2,10 @@ package org.itzheng.and.activity.window.proxy;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.os.Build;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import org.itzheng.and.activity.window.IWindowStatus;
 
@@ -39,7 +42,12 @@ public class WindowStatus_v21 implements IWindowStatus {
 
     @Override
     public void setTranslucentStatus(boolean on) {
-        mWindowStatus.setTranslucentStatus(on);
+        setTranslucentStatus(on, true);
+    }
+
+    @Override
+    public void setTranslucentStatus(boolean on, boolean isFullTranslucent) {
+        mWindowStatus.setTranslucentStatus(on, isFullTranslucent);
     }
 
     @Override
@@ -70,9 +78,11 @@ public class WindowStatus_v21 implements IWindowStatus {
     @Override
     public void setStatusBarDarkMode(boolean on) {
         // mWindowStatus.setStatusBarDarkMode(on);
-// 加个阴影
+        // 加个阴影
         if (on) {
-            setStatusBarColor(Color.BLACK);
+            setStatusBarColor(0x7f000000);
+        } else {
+            setStatusBarColor(Color.TRANSPARENT);
         }
     }
 

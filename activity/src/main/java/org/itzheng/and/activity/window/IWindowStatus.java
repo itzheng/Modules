@@ -41,6 +41,15 @@ public interface IWindowStatus {
     void setTranslucentStatus(boolean on);
 
     /**
+     * 设置透明状态栏
+     *
+     * @param on
+     * @param isFullTranslucent 是否是全透明，部分手机有个阴影，如果为true是，需要去除阴影
+     */
+    void setTranslucentStatus(boolean on, boolean isFullTranslucent);
+
+
+    /**
      * 设置底部虚拟返回键为透明
      * true 虚拟返回键透明，并且布局沉浸到虚拟返回键上，如果此时没有设置状态栏透明，那么布局将自动沉浸到状态栏，只是被顶层颜色覆盖
      * false 布局没有沉浸到虚拟返回键上

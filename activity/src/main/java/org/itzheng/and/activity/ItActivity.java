@@ -47,6 +47,11 @@ public class ItActivity extends AppCompatActivity implements IWindowStatus {
     }
 
     @Override
+    public void setTranslucentStatus(boolean on, boolean isFullTranslucent) {
+        getWindowStatusHelper().setTranslucentStatus(on, isFullTranslucent);
+    }
+
+    @Override
     public void setTranslucentNavigation(boolean on) {
         getWindowStatusHelper().setTranslucentNavigation(on);
     }

@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.view.ViewStub;
 
+import org.itzheng.and.baseutils.log.LogHelper;
 import org.itzheng.and.fragment.guide.GuideFragment;
 import org.itzheng.and.fragment.main.MainFragment;
 import org.itzheng.and.fragment.menu.MenuFragment;
@@ -42,8 +43,9 @@ public class FrameMainActivity extends BaseActivity {
     private void showSplash() {
         setHideActionBar(true);
         setTranslucentNavigation(true);
+//        setStatusBarDarkMode(true);
         setTranslucentStatus(true);
-        setStatusBarDarkMode(true);
+        setStatusBarDarkMode(false);
         final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         final SplashFragment splashFragment = new SplashFragment();
         fragmentTransaction.replace(R.id.flFragmentContent, splashFragment);
@@ -161,9 +163,12 @@ public class FrameMainActivity extends BaseActivity {
         });
     }
 
+    private static final String TAG = "FrameMainActivity";
+
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
+        LogHelper.d(TAG, "onBackPressed");
         showSplash();
     }
 }

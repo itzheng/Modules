@@ -138,6 +138,11 @@ public class MySystemUIModesActivity extends AppCompatActivity implements IWindo
     }
 
     @Override
+    public void setTranslucentStatus(boolean on, boolean isFullTranslucent) {
+        getWindowStatusHelper().setTranslucentStatus(on, isFullTranslucent);
+    }
+
+    @Override
     public void setTranslucentNavigation(boolean on) {
         getWindowStatusHelper().setTranslucentNavigation(on);
     }

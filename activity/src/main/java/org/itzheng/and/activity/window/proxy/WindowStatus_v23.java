@@ -2,6 +2,7 @@ package org.itzheng.and.activity.window.proxy;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -69,18 +70,32 @@ public class WindowStatus_v23 implements IWindowStatus {
 
     private static final String TAG = "WindowStatus_v23";
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void setTranslucentStatus(boolean on) {
+        setTranslucentStatus(on, true);
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void setTranslucentStatus(boolean on, boolean isFullTranslucent) {
         Window win = mActivity.getWindow();
         WindowManager.LayoutParams winParams = win.getAttributes();
         final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
         if (on) {
             winParams.flags |= bits;
+            if (isFullTranslucent) {
+                win.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                win.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+                win.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                win.setStatusBarColor(Color.TRANSPARENT);
+            }
         } else {
             winParams.flags &= ~bits;
         }
         win.setAttributes(winParams);
-
     }
 
     @Override
