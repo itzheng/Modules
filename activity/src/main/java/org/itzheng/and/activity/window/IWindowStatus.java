@@ -45,6 +45,7 @@ public interface IWindowStatus {
      *
      * @param on
      * @param isFullTranslucent 是否是全透明，部分手机有个阴影，如果为true是，需要去除阴影
+     *                          最低支持到APi 21 ，21以下设置无效
      */
     void setTranslucentStatus(boolean on, boolean isFullTranslucent);
 

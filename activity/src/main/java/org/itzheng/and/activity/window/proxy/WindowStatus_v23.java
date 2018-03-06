@@ -70,14 +70,12 @@ public class WindowStatus_v23 implements IWindowStatus {
 
     private static final String TAG = "WindowStatus_v23";
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void setTranslucentStatus(boolean on) {
         setTranslucentStatus(on, true);
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void setTranslucentStatus(boolean on, boolean isFullTranslucent) {
         Window win = mActivity.getWindow();
@@ -86,11 +84,15 @@ public class WindowStatus_v23 implements IWindowStatus {
         if (on) {
             winParams.flags |= bits;
             if (isFullTranslucent) {
-                win.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    win.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                }
                 win.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
                 win.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                win.setStatusBarColor(Color.TRANSPARENT);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    win.setStatusBarColor(Color.TRANSPARENT);
+                }
             }
         } else {
             winParams.flags &= ~bits;
